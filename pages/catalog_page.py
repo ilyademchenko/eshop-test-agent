@@ -1,49 +1,79 @@
-from playwright.async_api import Page
-from .base_page import BasePage
+from playwright.async_api import Page, Locator
 
 
-class CatalogPage(BasePage):
-    """Страница каталога продуктов eshop.sibur.ru"""
+class CatalogPage:
+    """Страница каталога продуктов eshop.sibur.ru
+    (Siebel view: SIB ECOM Product Catalog View).
 
-    URL = "/catalog"
-
-    # --- Локаторы ---
-    SEARCH_INPUT = "[data-testid='search-input'], input[placeholder*='Поиск'], input[name='search']"
-    SEARCH_BUTTON = "[data-testid='search-btn'], button[type='submit'][form*='search']"
-    PRODUCT_CARD = "[data-testid='product-card'], .product-card, .catalog-item"
-    PRODUCT_TITLE = "[data-testid='product-title'], .product-title, .product-name"
-    PRODUCT_PRICE = "[data-testid='product-price'], .product-price, .price"
-    ADD_TO_CART_BUTTON = "[data-testid='add-to-cart'], .add-to-cart, button:has-text('В корзину')"
-    FILTER_PANEL = "[data-testid='filter-panel'], .filter-panel, .filters"
-    CATEGORY_LINK = "[data-testid='category-link'], .category-link, .sidebar-category a"
-    PAGINATION_NEXT = "[data-testid='pagination-next'], .pagination-next, a[rel='next']"
+    Содержит только локаторы. Действия и ожидания — в steps/.
+    Общая шапка/меню/подвал не дублируются — они описаны в MainPage.
+    """
 
     def __init__(self, page: Page) -> None:
-        super().__init__(page)
+        self.page = page
 
-    async def open(self) -> "CatalogPage":
-        await self.navigate(self.URL)
-        return self
+    # --- Секции страницы ---
 
-    async def search(self, query: str) -> None:
-        await self.fill(self.SEARCH_INPUT, query)
-        await self.click(self.SEARCH_BUTTON)
-        await self.page.wait_for_load_state("networkidle")
+    @property
+    def catalog_title(self) -> Locator:
+        """Заголовок страницы 'Каталог'."""
+        return self.page.locator(".catalog-header")
 
-    async def get_product_titles(self) -> list[str]:
-        cards = self.page.locator(self.PRODUCT_TITLE)
-        return await cards.all_text_contents()
+    @property
+    def content_section(self) -> Locator:
+        """Основная область каталога (сайдбар категорий + контент)."""
+        return self.page.locator(".sib-ecom-catalog-view-content")
 
-    async def add_first_product_to_cart(self) -> str:
-        title = await self.get_text(f"{self.PRODUCT_CARD}:first-child {self.PRODUCT_TITLE}")
-        await self.click(f"{self.PRODUCT_CARD}:first-child {self.ADD_TO_CART_BUTTON}")
-        await self.page.wait_for_load_state("networkidle")
-        return title
+    @property
+    def category_list_section(self) -> Locator:
+        """Левый сайдбар со списком категорий (классов продуктов)."""
+        return self.page.locator(".sib-ecom-catalog-list")
 
-    async def click_product(self, index: int = 0) -> None:
-        cards = self.page.locator(self.PRODUCT_CARD)
-        await cards.nth(index).click()
-        await self.page.wait_for_load_state("networkidle")
+    @property
+    def category_details_section(self) -> Locator:
+        """Правая область с содержимым выбранной категории."""
+        return self.page.locator(".sib-ecom-catalog-view-content__catalog-categories")
 
-    async def get_products_count(self) -> int:
-        return await self.page.locator(self.PRODUCT_CARD).count()
+    @property
+    def express_banner_section(self) -> Locator:
+        """Баннер раздела 'Экспресс-покупка'."""
+        return self.page.locator(".express-banner")
+
+    # --- Интерактивные элементы ---
+
+    @property
+    def category_tiles(self) -> Locator:
+        """Коллекция плиток категорий в левом сайдбаре (для выбора класса продукта)."""
+        return self.category_list_section.locator(".siebui-tile")
+
+    @property
+    def selected_category_link(self) -> Locator:
+        """Ссылка-заголовок выбранной категории в правой области."""
+        return self.category_details_section.locator(".category-link")
+
+    @property
+    def search_input(self) -> Locator:
+        """Поле поиска продукта по каталогу."""
+        return self.page.locator("#sib-product-search-input")
+
+    @property
+    def learn_more_button(self) -> Locator:
+        """Кнопка 'Узнать подробнее' в баннере экспресс-покупки."""
+        return self.page.locator(".express-banner__button button")
+
+    @property
+    def watch_products_button(self) -> Locator:
+        """Кнопка 'Посмотреть продукты' — переход к списку товаров категории."""
+        return self.page.locator(".watch-products.js-to-products")
+
+    # --- Всплывающие баннеры ---
+
+    @property
+    def cookie_accept_button(self) -> Locator:
+        """Кнопка принятия cookie."""
+        return self.page.locator(".js-accept-cookie")
+
+    @property
+    def site_switch_accept_button(self) -> Locator:
+        """Кнопка подтверждения в баннере смены домена (frog-popup)."""
+        return self.page.locator(".js-accept-frog")
