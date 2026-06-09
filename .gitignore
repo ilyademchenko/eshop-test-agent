@@ -1,0 +1,11 @@
+.env
+.claude/settings.local.json
+__pycache__/
+*.pyc
+.pytest_cache/
+screenshots/
+videos/
+traces/
+allure-results/
+allure-report/
+.ruff_cache/
