@@ -2,7 +2,7 @@
 Утилита для конвертации записанных Playwright-скриптов в методы Page Object.
 
 Использование:
-    python utils/script_converter.py recorded_scripts/auth/login.py --page AuthPage
+    python utils/script_converter.py recorded_scripts/auth/login.py --page LoginPage
 """
 
 import re

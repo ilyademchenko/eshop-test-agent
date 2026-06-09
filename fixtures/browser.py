@@ -40,9 +40,8 @@ async def page(context: BrowserContext) -> Page:
 
 @pytest.fixture
 async def authenticated_page(page: Page):
-    """Страница с уже выполненной авторизацией."""
-    from pages import AuthPage
-    auth = AuthPage(page)
-    await auth.open()
-    await auth.login_as_default_user()
+    """Страница с уже выполненной авторизацией (пользователь «КЗДТ»)."""
+    from steps import AuthSteps
+    steps = AuthSteps(page)
+    await steps.login()
     yield page
