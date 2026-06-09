@@ -99,6 +99,11 @@ class MainPage:
     # --- Интерактивные элементы: основное меню ---
 
     @property
+    def cart_link(self) -> Locator:
+        """Иконка корзины в шапке — признак наличия товаров и переход в корзину."""
+        return self.page.locator(".sib-ecustomer-header-link-cart-info")
+
+    @property
     def personal_account_link(self) -> Locator:
         """Логотип 'Личный кабинет' — переход на главную кабинета."""
         return self.page.locator(".sib-ecustomer-menu-logo")
