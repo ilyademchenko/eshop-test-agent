@@ -54,7 +54,7 @@ recorded_scripts/<page>/ — сырые записи codegen.
 
 - `CLAUDE.md` — правила и Siebel-специфика для AI-агента.
 - `.claude/commands/` — слэш-команды: `/record-scenario`, `/scenario-to-test`,
-  `/add-page`, `/run-tests`.
+  `/add-page`, `/scan-page`, `/run-tests`.
 - `.claude/agents/test-author.md` — субагент для авторинга/починки тестов.
 
 См. `CLAUDE.md` для подробных правил и разбора граблей Siebel.

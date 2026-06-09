@@ -60,7 +60,9 @@ utils/         recorder.py (обёртка codegen), script_converter.py.
 
 ## Рабочий процесс: запись → тест
 
-См. `.claude/commands/` для готовых сценариев. Кратко:
+Готовые слэш-команды в `.claude/commands/`: `/record-scenario`, `/scenario-to-test`,
+`/add-page`, `/scan-page` (прочитать страницу и наполнить PageObject локаторами),
+`/run-tests`. Кратко:
 
 1. `python utils/recorder.py --page <page> --name <name> --url <path>` — записать.
 2. Прогнать запись (`python recorded_scripts/<page>/<name>.py`), найти реальные селекторы
