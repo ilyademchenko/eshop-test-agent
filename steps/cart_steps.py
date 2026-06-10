@@ -1,7 +1,8 @@
 from playwright.async_api import Page, expect
 
 from config import settings
-from pages import MainPage, ProductListPage
+from pages import MainPage, ProductListPage, CartPage
+from steps.catalog_steps import ProductInfo
 
 expect.set_options(timeout=settings.NAVIGATION_TIMEOUT)
 
@@ -13,6 +14,7 @@ class CartSteps:
         self.page = page
         self.main_page = MainPage(page)
         self.product_list_page = ProductListPage(page)
+        self.cart_page = CartPage(page)
         self.page.set_default_timeout(settings.NAVIGATION_TIMEOUT)
 
     async def wait_spinner_gone(self) -> None:
@@ -54,3 +56,9 @@ class CartSteps:
             timeout=settings.NAVIGATION_TIMEOUT
         )
         await expect(self.main_page.cart_link).to_be_visible()
+
+    async def assert_product_in_cart(self, product: ProductInfo) -> None:
+        """Проверить, что корзина содержит товар с названием из product.title."""
+        await expect(self.cart_page.cart_step).to_be_visible()
+        item = self.cart_page.cart_items.filter(has_text=product.title)
+        await expect(item).to_be_visible()

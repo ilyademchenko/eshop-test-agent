@@ -1,7 +1,7 @@
 import pytest
 from playwright.async_api import Page
 
-from steps import AuthSteps, CatalogSteps
+from steps import AuthSteps, CatalogSteps, CartSteps
 from test_data import get_product_code
 
 PRODUCT_CODE = get_product_code("766583")
@@ -14,10 +14,11 @@ class TestAddToCartViaSearch:
     async def test_add_product_via_search(self, page: Page):
         auth = AuthSteps(page)
         catalog = CatalogSteps(page)
+        cart = CartSteps(page)
 
         await auth.login()
         await catalog.open_catalog()
         product = await catalog.search_product(PRODUCT_CODE)
         await catalog.add_to_cart_from_details()
         await catalog.open_cart()
-        await catalog.assert_product_in_cart(product)
+        await cart.assert_product_in_cart(product)

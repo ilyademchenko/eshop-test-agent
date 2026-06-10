@@ -82,9 +82,3 @@ class CatalogSteps:
         await expect(self.cart_page.content_section).to_be_visible(
             timeout=settings.NAVIGATION_TIMEOUT
         )
-
-    async def assert_product_in_cart(self, product: ProductInfo) -> None:
-        """Проверить, что корзина содержит товар с названием из product.title."""
-        await expect(self.cart_page.cart_step).to_be_visible()
-        item = self.cart_page.cart_items.filter(has_text=product.title)
-        await expect(item).to_be_visible()
