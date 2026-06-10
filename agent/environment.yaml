@@ -1,0 +1,6 @@
+name: test-author-env
+description: Среда для агента авторинга тестов eshop.sibur.ru
+config:
+  type: cloud
+  networking:
+    type: unrestricted
